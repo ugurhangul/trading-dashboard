@@ -20,8 +20,11 @@ const Summary = () => {
 
   const profitToday = sum(incomeToday?.map((inc) => JSON.parse(inc?.income)));
   const weekProfit = sum(flatten(Object.values(incomes)).map((inc) => JSON.parse(inc?.income)));
-
+  const netBalance = parseFloat(account.totalWalletBalance) + parseFloat(account.totalUnrealizedProfit);
+  const currentNetProfit =  parseFloat(profitToday) + parseFloat(account.totalUnrealizedProfit);
+  console.log(netBalance);
   const tradesNumber = {};
+
 
   tradesToday?.forEach((trade) => {
     tradesNumber[trade.symbol] = (tradesNumber[trade.symbol] || 0) + 1;
@@ -33,7 +36,7 @@ const Summary = () => {
 
   return (
     <>
-      <Grid item xs={6} sm={4} md={2}>
+      <Grid item xs={4} sm={4} md={4}>
         <SummaryBox
           text="Profit Today"
           total={getPercentIncrease(profitToday, account?.totalWalletBalance)}
@@ -43,7 +46,18 @@ const Summary = () => {
         />
       </Grid>
 
-      <Grid item xs={6} sm={4} md={2}>
+      <Grid item xs={4} sm={4} md={4}>
+        <SummaryBox
+          text="Current Net Profit Today"
+          total={getPercentIncrease(currentNetProfit, account?.totalWalletBalance)}
+          subText={fCurrency(currentNetProfit)}
+          color="primary"
+          backgroundColor="success"
+        />
+      </Grid>
+
+
+      <Grid item xs={4} sm={4} md={4}>
         <SummaryBox
           text="Profit last 7 days"
           total={getPercentIncrease(weekProfit, account?.totalWalletBalance)}
@@ -52,7 +66,7 @@ const Summary = () => {
           backgroundColor="info"
         />
       </Grid>
-      <Grid item xs={6} sm={4} md={2}>
+      <Grid item xs={4} sm={4} md={4}>
         <SummaryBox
           text="Unrealised PnL"
           total={fCurrency(account?.totalUnrealizedProfit)}
@@ -60,7 +74,7 @@ const Summary = () => {
           backgroundColor="error"
         />
       </Grid>
-      <Grid item xs={6} sm={4} md={2}>
+      <Grid item xs={4} sm={4} md={4}>
         <SummaryBox
           text="Most traded today"
           total={sortedPerformersOfToday?.pop()?.[0]}
@@ -68,7 +82,7 @@ const Summary = () => {
           backgroundColor="warning"
         />
       </Grid>
-      <Grid item xs={6} sm={4} md={2}>
+      <Grid item xs={4} sm={4} md={4}>
         <SummaryBox
           text="Trades today"
           total={fNumber(tradesToday?.length)}
@@ -76,12 +90,22 @@ const Summary = () => {
           backgroundColor="secondary"
         />
       </Grid>
-      <Grid item xs={6} sm={4} md={2}>
+      <Grid item xs={6} sm={6} md={6}>
         <SummaryBox
           text="Balance"
-          total={fCurrency(Math.round(account?.totalWalletBalance))}
+          total={fCurrency(account?.totalWalletBalance)}
           color="error"
           backgroundColor="primary"
+        />
+      </Grid>
+      
+      <Grid item xs={6} sm={6} md={6}>
+        <SummaryBox
+          text="Net Balance"
+          total={fCurrency(netBalance)}
+       
+          color="primary"
+          backgroundColor="success"
         />
       </Grid>
     </>

@@ -16,11 +16,24 @@ const TopPerformers = () => {
   const incomes = useRecoilValue(incomesAtom);
 
   const pnlRepartition = {};
-
+  const isToday = (someDate) => {
+  
+    const today = new Date()
+    return someDate.getDate() === today.getDate() &&
+      someDate.getMonth() === today.getMonth() &&
+      someDate.getFullYear() === today.getFullYear()
+  }
   flatten(Object.values(incomes))?.forEach((inc) => {
-    pnlRepartition[inc?.symbol] = (pnlRepartition[inc?.symbol] || 0) + JSON.parse(inc?.income);
-  });
 
+const date = new Date(JSON.parse(inc.time));
+
+if (isToday(date)){
+  pnlRepartition[inc?.symbol] = (pnlRepartition[inc?.symbol] || 0) + JSON.parse(inc?.income);
+}
+
+  
+  });
+    
   const orderedPerformers = orderBy(
     Object.keys(pnlRepartition).map((key) => ({ label: key, value: pnlRepartition[key] })),
     'value',
@@ -31,9 +44,9 @@ const TopPerformers = () => {
     <Card>
       <CardHeader
         title="Top Performers"
-        subheader={`+${fCurrency(sum(orderedPerformers.map((o) => o.value)))} last 7 days`}
+        subheader={`${fCurrency(sum(orderedPerformers.map((o) => o.value)))} today`}
       />
-      <Box sx={{ mx: 3 }} dir="ltr">
+      <Box sx={{ mx: 6 }} dir="ltr">
         <Content orderedPerformers={orderedPerformers} />
       </Box>
     </Card>
@@ -47,12 +60,12 @@ const Content = ({ orderedPerformers }) => {
       y: {
         formatter: (seriesName) => fCurrency(seriesName),
         title: {
-          formatter: () => 'Last 7 days: '
+          formatter: () => 'Today: '
         }
       }
     },
     plotOptions: {
-      bar: { horizontal: true, barHeight: '28%', borderRadius: 2 }
+      bar: { horizontal: true, barHeight: '50%', borderRadius: 2 }
     },
     xaxis: {
       categories: orderedPerformers.map((o) => o.label)
