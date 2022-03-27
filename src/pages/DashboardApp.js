@@ -4,14 +4,11 @@ import { Grid, Container } from '@mui/material';
 // components
 import Page from '../components/Page';
 import {
-  // AppTasks,
-  // AppNewsUpdate,
-  LastOrders,
+   LastOrders,
   PositionsRepartition,
   PerformanceOverview,
-  // AppTrafficBySite,
-  // AppCurrentSubject,
-  TopPerformers
+   TopPerformersToday,
+  TopPerformersWeek
 } from '../components/_dashboard/app';
 import Summary from '../layouts/dashboard/Summary';
 
@@ -19,44 +16,31 @@ import Summary from '../layouts/dashboard/Summary';
 
 const DashboardApp = () => (
   <Page title="Binance Futures Dashboard">
-    <Container style={{ marginTop: 20 }} maxWidth="xl">
-      {/* <Box sx={{ pb: 5 }}>
-        <Typography variant="h4">Hi, Welcome back</Typography>
-      </Box> */}
+    <Container style={{ marginTop: 20 }} maxWidth="xxxl">
+  
       <Grid container spacing={3}>
         <Summary />
 
-        <Grid item xs={12} md={6} lg={8}>
-          <PerformanceOverview />
-        </Grid>
-
-        <Grid item xs={12} md={6} lg={4}>
-          <PositionsRepartition />
-        </Grid>
-
-        <Grid item xs={12} md={6} lg={8}>
-          <TopPerformers />
-        </Grid>
-
-        <Grid item xs={12} md={6} lg={4}>
+        <Grid item xs={12} md={6} lg={6}>
           <LastOrders />
         </Grid>
 
-        {/* <Grid item xs={12} md={6} lg={4}>
-          <AppCurrentSubject />
-        </Grid> */}
-
-        {/* <Grid item xs={12} md={6} lg={8}>
-          <AppNewsUpdate news={news} />
-        </Grid> */}
-
-        {/* <Grid item xs={12} md={6} lg={4}>
-          <AppTrafficBySite />
+        <Grid item xs={12} md={6} lg={6}>
+          <PositionsRepartition />
         </Grid>
 
-        <Grid item xs={12} md={6} lg={8}>
-          <AppTasks />
-        </Grid> */}
+        <Grid item xs={6} md={6} lg={6}>
+          <TopPerformersToday />
+        </Grid>
+    
+        <Grid item xs={6} md={6} lg={6}>
+          <TopPerformersWeek />
+        </Grid>
+      
+       
+        <Grid item xs={12} md={12} lg={12}>
+          <PerformanceOverview />
+        </Grid>
       </Grid>
     </Container>
   </Page>

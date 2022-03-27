@@ -12,7 +12,7 @@ import { incomesAtom } from '../../../recoil/atoms';
 
 // ----------------------------------------------------------------------
 
-const TopPerformers = () => {
+const TopPerformersToday = () => {
   const incomes = useRecoilValue(incomesAtom);
 
   const pnlRepartition = {};
@@ -43,7 +43,7 @@ if (isToday(date)){
   return (
     <Card>
       <CardHeader
-        title="Top Performers"
+        title="Top Performers Today"
         subheader={`${fCurrency(sum(orderedPerformers.map((o) => o.value)))} today`}
       />
       <Box sx={{ mx: 6 }} dir="ltr">
@@ -74,7 +74,7 @@ const Content = ({ orderedPerformers }) => {
 
   const CHART_DATA = [{ data: orderedPerformers.map((o) => o.value) }];
 
-  return <ReactApexChart type="bar" series={CHART_DATA} options={chartOptions} height={364} />;
+  return <ReactApexChart type="bar" series={CHART_DATA} options={chartOptions} height={500} />;
 };
 
-export default TopPerformers;
+export default TopPerformersToday;

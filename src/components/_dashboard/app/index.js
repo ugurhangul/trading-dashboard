@@ -1,4 +1,5 @@
-export { default as TopPerformers } from './TopPerformers';
+export { default as TopPerformersWeek } from './TopPerformersWeek';
+export { default as TopPerformersToday } from './TopPerformersToday';
 export { default as AppCurrentSubject } from './AppCurrentSubject';
 export { default as PositionsRepartition } from './PositionsRepartition';
 export { default as LastOrders } from './LastOrders';

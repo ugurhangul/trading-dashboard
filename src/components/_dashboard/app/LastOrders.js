@@ -4,7 +4,9 @@ import { memo } from 'react';
 import { format } from 'date-fns';
 
 // material
-import { Card, Typography, CardHeader, CardContent, CircularProgress } from '@mui/material';
+import { Card, Typography, CardHeader, CardContent, CircularProgress, Grid } from '@mui/material';
+
+
 import {
   Timeline,
   TimelineItem,
@@ -15,11 +17,13 @@ import {
 } from '@mui/lab';
 
 // utils
+import { fCurrency } from '../../../utils/formatNumber';
 import { fDateTime } from '../../../utils/formatTime';
 import { tradesAtom } from '../../../recoil/atoms';
 
 function Trade({ trade, isLast }) {
-  const { side, time, symbol } = trade;
+
+  const { side, time, symbol,realizedPnl } = trade;
 
   const title = `Long ${symbol} ${side === 'BUY' ? 'opened' : 'closed'}`;
 
@@ -36,6 +40,9 @@ function Trade({ trade, isLast }) {
       </TimelineSeparator>
       <TimelineContent>
         <Typography variant="subtitle2">{title}</Typography>
+        <Typography variant="subtitle2" sx={{ color: 'text.secondary' }}>
+          {fCurrency(realizedPnl)} PNL
+        </Typography>
         <Typography variant="caption" sx={{ color: 'text.secondary' }}>
           {fDateTime(time)}
         </Typography>
@@ -56,10 +63,19 @@ const LastOrders = () => {
         }
       }}
     >
-      <CardHeader title="Last Trades" />
+      <CardHeader title="Last Trades Today" />
       <CardContent>
-        <Content trades={trades[today]} />
+        <Grid container>
+
+          <Grid item xs={6} md={6} lg={6}>
+            <Content trades={orderBy(trades[today], ['time'], ['desc']).slice(0,5)}/>
+          </Grid>
+          <Grid item xs={6} md={6} lg={6}>
+            <Content trades={orderBy(trades[today], ['time'], ['desc']).slice(5,10)}/>
+          </Grid>
+        </Grid>
       </CardContent>
+
     </Card>
   );
 };
@@ -69,13 +85,13 @@ const Content = memo(({ trades }) => {
     return <CircularProgress />;
   }
 
-  const orderedTrades = orderBy(trades, ['time'], ['desc']);
+
   const tradesLength = trades.length;
-  const maxLength = 5;
+  const maxLength = 10;
 
   return (
     <Timeline>
-      {orderedTrades.slice(0, maxLength).map((trade, index) => (
+      {trades.slice(0, maxLength).map((trade, index) => (
         <Trade
           key={trade.id}
           trade={trade}
