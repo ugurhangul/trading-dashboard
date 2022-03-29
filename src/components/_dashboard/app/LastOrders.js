@@ -19,29 +19,27 @@ import {
 // utils
 import { fCurrency } from '../../../utils/formatNumber';
 import { fDateTime } from '../../../utils/formatTime';
-import { tradesAtom } from '../../../recoil/atoms';
+import { incomesAtom } from '../../../recoil/atoms';
 
 function Trade({ trade, isLast }) {
 
-  const { side, time, symbol,realizedPnl } = trade;
+  const { time, symbol, income } = trade;
 
-  const title = `Long ${symbol} ${side === 'BUY' ? 'opened' : 'closed'}`;
 
   return (
     <TimelineItem>
       <TimelineSeparator>
         <TimelineDot
           sx={{
-            bgcolor:
-              (side === 'BUY' && 'info.main') || (side === 'SELL' && 'success.main') || 'error.main'
+            bgcolor: 'info.main'
           }}
         />
         {isLast ? null : <TimelineConnector />}
       </TimelineSeparator>
       <TimelineContent>
-        <Typography variant="subtitle2">{title}</Typography>
+        <Typography variant="subtitle2">{symbol}</Typography>
         <Typography variant="subtitle2" sx={{ color: 'text.secondary' }}>
-          {fCurrency(realizedPnl)} PNL
+          {fCurrency(income)} PNL
         </Typography>
         <Typography variant="caption" sx={{ color: 'text.secondary' }}>
           {fDateTime(time)}
@@ -52,7 +50,7 @@ function Trade({ trade, isLast }) {
 }
 
 const LastOrders = () => {
-  const trades = useRecoilValue(tradesAtom);
+  const trades = useRecoilValue(incomesAtom);
   const today = format(new Date(), 'MM/dd/yyyy');
 
   return (
@@ -68,10 +66,10 @@ const LastOrders = () => {
         <Grid container>
 
           <Grid item xs={6} md={6} lg={6}>
-            <Content trades={orderBy(trades[today], ['time'], ['desc']).slice(0,5)}/>
+            <Content trades={orderBy(trades[today], ['time'], ['desc']).slice(0, 5)} />
           </Grid>
           <Grid item xs={6} md={6} lg={6}>
-            <Content trades={orderBy(trades[today], ['time'], ['desc']).slice(5,10)}/>
+            <Content trades={orderBy(trades[today], ['time'], ['desc']).slice(5, 10)} />
           </Grid>
         </Grid>
       </CardContent>

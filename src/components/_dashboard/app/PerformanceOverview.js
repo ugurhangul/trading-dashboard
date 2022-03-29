@@ -7,62 +7,65 @@ import { useRecoilValue } from 'recoil';
 import { Card, CardHeader, Box } from '@mui/material';
 //
 import { BaseOptionChart } from '../../charts';
-import { fPercent } from '../../../utils/formatNumber';
+import { fPercent,fCurrency } from '../../../utils/formatNumber';
 import { generateLastNdates } from '../../../utils/formatTime';
-import { incomesAtom, accountAtom } from '../../../recoil/atoms';
+import { incomesMonthAtom, accountAtom } from '../../../recoil/atoms';
 
 // ----------------------------------------------------------------------
 
-const lastWeekDates = generateLastNdates(7, 'MM/dd/yyyy').reverse();
+const lastMonthDates = generateLastNdates(30, 'MM/dd/yyyy').reverse();
 
 const getIncomeForDate = (incomes, date) => {
   const incomeList = incomes[format(new Date(date), 'MM/dd/yyyy')];
   return sum(incomeList?.map((inc) => JSON.parse(inc?.income)));
 };
 
-const getIncomeOfWeek = (incomes, isRounded = false) => {
-  const incomeOfWeek = lastWeekDates.map((date) => getIncomeForDate(incomes, date));
+const getIncomeOfMonth = (incomes, isRounded = false) => {
+  const incomeOfMonth = lastMonthDates.map((date) => getIncomeForDate(incomes, date));
 
   return isRounded
-    ? incomeOfWeek.map((inc) => Math.round(inc))
-    : incomeOfWeek.map((inc) => parseFloat(inc.toFixed(2)));
+    ? incomeOfMonth.map((inc) => Math.round(inc))
+    : incomeOfMonth.map((inc) => parseFloat(inc.toFixed(2)));
 };
 
-const getBalanceLastWeek = (incomes, balance) => {
+
+const getBalanceLastMonth = (incomes, balance) => {
   let sumIncome = 0;
   const balances = [];
 
-  const incomeOfWeek = getIncomeOfWeek(incomes).reverse();
+  const incomeOfMonth = getIncomeOfMonth(incomes).reverse();
 
-  incomeOfWeek.forEach((inc, i) => {
+  incomeOfMonth.forEach((inc, i) => {
     sumIncome += inc;
-    balances.push(Math.round(balance - sumIncome + incomeOfWeek[i]));
+    balances.push(Math.round(balance - sumIncome + incomeOfMonth[i]));
   });
-
+ 
   return balances.reverse();
 };
 
+
+
 const PerformanceOverview = () => {
-  const incomes = useRecoilValue(incomesAtom);
+  const incomes = useRecoilValue(incomesMonthAtom);
   const account = useRecoilValue(accountAtom);
 
-  const profitLastWeek = sum(
+  const profitLastMonth = sum(
     flatten(Object.values(incomes))?.map((inc) => JSON.parse(inc?.income))
   );
 
   const { totalCrossWalletBalance = 0 } = account;
   const balance = JSON.parse(totalCrossWalletBalance);
   const increasePercent =
-    (balance > 0 && profitLastWeek && (profitLastWeek / (balance - profitLastWeek)) * 100) || 0;
+    (balance > 0 && profitLastMonth && (profitLastMonth / (balance - profitLastMonth)) * 100) || 0;
 
-  const balancesOfLastWeek = getBalanceLastWeek(incomes, balance);
-  const weekIncome = getIncomeOfWeek(incomes, true);
+  const balancesOfLastMonth = getBalanceLastMonth(incomes, balance);
+  const MonthIncome = getIncomeOfMonth(incomes, true);
 
   const chartOptions = merge(BaseOptionChart(), {
     stroke: { width: [0, 2, 3] },
     plotOptions: { bar: { columnWidth: '11%', borderRadius: 4 } },
     fill: { type: ['solid', 'gradient', 'solid'] },
-    labels: lastWeekDates,
+    labels: lastMonthDates,
     xaxis: { type: 'datetime' },
     yaxis: [
       {
@@ -70,13 +73,13 @@ const PerformanceOverview = () => {
         opposite: true,
         title: 'Income',
         min: 0,
-        max: max(weekIncome) * 2,
+        max: max(MonthIncome) * 2,
         forceNiceScale: true
       },
       {
         seriesName: 'Balance',
-        min: Math.round(balancesOfLastWeek[0] * 0.99),
-        max: Math.round(balancesOfLastWeek[balancesOfLastWeek.length - 1] * 1.01),
+        min: Math.round(balancesOfLastMonth[0] * 0.99),
+        max: Math.round(balancesOfLastMonth[balancesOfLastMonth.length - 1] * 1.01),
         forceNiceScale: true,
         title: 'Balance'
       }
@@ -99,12 +102,12 @@ const PerformanceOverview = () => {
     {
       name: 'Income',
       type: 'column',
-      data: weekIncome
+      data: MonthIncome
     },
     {
       name: 'Balance',
       type: 'area',
-      data: balancesOfLastWeek
+      data: balancesOfLastMonth
     }
   ];
 
@@ -112,7 +115,7 @@ const PerformanceOverview = () => {
     <Card>
       <CardHeader
         title="Performance Overview"
-        subheader={`${fPercent(increasePercent, '0.00%')} last 7 days`}
+        subheader={`${fPercent(increasePercent, '0.00%')} / ${fCurrency(profitLastMonth)} last 30 days`}
       />
       <Box sx={{ p: 3, pb: 1 }} dir="ltr">
         <ReactApexChart type="line" series={CHART_DATA} options={chartOptions} height={364} />

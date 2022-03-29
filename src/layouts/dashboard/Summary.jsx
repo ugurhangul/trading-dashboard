@@ -22,7 +22,6 @@ const Summary = () => {
   const weekProfit = sum(flatten(Object.values(incomes)).map((inc) => JSON.parse(inc?.income)));
   const netBalance = parseFloat(account.totalWalletBalance) + parseFloat(account.totalUnrealizedProfit);
   const currentNetProfit =  parseFloat(profitToday) + parseFloat(account.totalUnrealizedProfit);
-  console.log(netBalance);
   const tradesNumber = {};
 
 

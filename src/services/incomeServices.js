@@ -86,3 +86,23 @@ export const getIncomesOfTheWeek = async () => {
 
   return incomes;
 };
+
+export const getIncomesOfTheMonth = async () => {
+  const lastWeekDates = generateLastNdates(30, 'MM/dd/yyyy');
+  const incomes = {};
+
+  await axios
+    .all(lastWeekDates.map((day) => getUserIncomesByDate(day)))
+    .then(
+      axios.spread((...responses) => {
+        lastWeekDates.forEach((day, index) => {
+          incomes[day] = responses[index];
+        });
+      })
+    )
+    .catch((errors) => {
+      console.error('Something went wrong when fetching all the weekly incomes, error: ', errors);
+    });
+
+  return incomes;
+};
