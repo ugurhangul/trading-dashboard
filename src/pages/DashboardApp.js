@@ -29,11 +29,11 @@ const DashboardApp = () => (
           <PositionsRepartition />
         </Grid>
 
-        <Grid item xs={6} md={6} lg={6}>
+        <Grid item xs={12} md={12} lg={6}>
           <TopPerformersToday />
         </Grid>
     
-        <Grid item xs={6} md={6} lg={6}>
+        <Grid item xs={12} md={12} lg={6}>
           <TopPerformersWeek />
         </Grid>
       

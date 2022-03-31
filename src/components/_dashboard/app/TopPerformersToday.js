@@ -74,7 +74,7 @@ const Content = ({ orderedPerformers }) => {
 
   const CHART_DATA = [{ data: orderedPerformers.map((o) => o.value) }];
 
-  return <ReactApexChart type="bar" series={CHART_DATA} options={chartOptions} height={500} />;
+  return <ReactApexChart type="bar" series={CHART_DATA} options={chartOptions} height={1000} />;
 };
 
 export default TopPerformersToday;
