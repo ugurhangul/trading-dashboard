@@ -95,6 +95,7 @@ const CHART_COLORS = {
 
 const palette = {
   common: { black: '#000', white: '#fff' },
+  mode: 'dark',
   primary: { ...PRIMARY },
   secondary: { ...SECONDARY },
   info: { ...INFO },

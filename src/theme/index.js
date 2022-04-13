@@ -27,7 +27,7 @@ export default function ThemeConfig({ children }) {
     }),
     []
   );
-
+console.log(palette);
   const theme = createTheme(themeOptions);
   theme.components = componentsOverride(theme);
 
